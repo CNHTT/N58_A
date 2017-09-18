@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- 自动扫描 @Controller-->
-    <context:component-scan base-package="com.extra.controller"/>
+    <context:component-scan base-package="com.extra.n58.controller"/>
 
 
     <!-- 配置SpringMVC -->
@@ -36,6 +36,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/static/**"/>
             <bean class="com.extra.n58.interceptor.CommonInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

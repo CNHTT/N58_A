@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserDao {
-    User selectUserByPhoneOrEmail(@Param("emailOrPhone") String emailOrPhone, @Param("state") Short state);
+    User selectUserByLogin(@Param("nameOrEmail")String nameOrEmail,@Param("password")String pass);
 }

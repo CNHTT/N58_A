@@ -15,5 +15,9 @@
         <result column="SESSION_COOKIE" property="cookie" jdbcType="VARCHAR"/>
         <result column="IS_DELETE" property="isDelete" jdbcType="SMALLINT"/>
     </resultMap>
-
+    <select id="selectUserByLogin" resultMap="UserBaseMap">
+        SELECT  ID,USER_NAME ,USER_EMAIL,CREATE_TIME ,UUID FROM  user
+        WHERE (USER_NAME = #{nameOrEmail} OR USER_EMAIL = #{nameOrEmail})
+        AND  USER_PWD = #{password} AND IS_DELETE=1
+    </select>
 </mapper>
