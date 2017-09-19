@@ -20,4 +20,54 @@
         WHERE (USER_NAME = #{nameOrEmail} OR USER_EMAIL = #{nameOrEmail})
         AND  USER_PWD = #{password} AND IS_DELETE=1
     </select>
+    <select id="selectConsumeList" resultType="com.extra.n58.model.TransactionData">
+        SELECT  * FROM  transaction
+        WHERE tType='1'
+    </select>
+
+    <select id="selectRepealList" resultType="com.extra.n58.model.TransactionData">
+        SELECT  * FROM  transaction
+        WHERE tType='2'
+    </select>
+
+
+    <insert id="insterTranszction" parameterType="com.extra.n58.model.TransactionData">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT  INTO  transaction(
+        cardId,
+        amount,
+        currency,
+        merchantId,
+        terminalId,
+        batchId,
+        serialNo,
+        date,
+        time,
+        authCode,
+        sysRefNo,
+        oldSerialNo,
+        tType)
+        VALUES
+        (
+        #{cardId},
+        #{amount},
+        #{currency},
+        #{merchantId},
+        #{terminalId},
+        #{batchId},
+        #{serialNo},
+        #{date},
+        #{time},
+        #{authCode},
+        #{sysRefNo},
+        #{oldSerialNo},
+        #{tType}
+        )
+
+    </insert>
+
+
+
 </mapper>

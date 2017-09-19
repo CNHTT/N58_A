@@ -37,6 +37,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/static/**"/>
+            <mvc:exclude-mapping path="/**/*.mp"/>
             <bean class="com.extra.n58.interceptor.CommonInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

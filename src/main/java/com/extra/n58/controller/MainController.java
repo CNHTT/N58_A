@@ -1,17 +1,25 @@
 package com.extra.n58.controller;
 
+import com.extra.n58.model.DataBean;
+import com.extra.n58.model.TransactionData;
 import com.extra.n58.model.User;
 import com.extra.n58.model.response.ResponseObj;
+import com.extra.n58.model.response.ResponsePage;
 import com.extra.n58.service.LoginService;
 import com.extra.n58.utils.*;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import static com.extra.n58.utils.DataUtils.isNullString;
 
 /**
  * Created by Extra on 2017/9/18.
@@ -19,7 +27,7 @@ import javax.servlet.http.HttpSession;
  * Work to SZFP
  */
 @Controller
-public class MainController {
+public class MainController extends BaseController {
 
     private Logger log = Logger.getLogger(MainController.class);
 
@@ -31,12 +39,63 @@ public class MainController {
         return "login";
     }
 
+    @RequestMapping("/consume")
+    private  String consume(){
+        return "index";
+    }
+    @RequestMapping("/repeal")
+    private  String repeal(){
+        return "repeal";
+    }
+
+    @RequestMapping(value = "consume.mp")
+    @ResponseBody
+    public String getAllConsumeList(Long adminId,Integer pageNumber, Integer pageSize){
+        log.info("分页查询consume信息"+pageNumber +" , "+pageSize);
+        try {
+            ResponsePage<TransactionData> responsePage = loginService.queryByPageConsume(pageNumber,pageSize,adminId);
+            return responseResult(responsePage);
+        }catch (Exception e){
+            return   responseFail(e.toString());
+        }
+    }
+ @RequestMapping(value = "repeal.mp")
+    @ResponseBody
+    public String getAllRepealList(Long adminId,Integer pageNumber, Integer pageSize){
+        log.info("分页查询Repeal信息"+pageNumber +" , "+pageSize);
+        try {
+            ResponsePage<TransactionData> responsePage = loginService.queryByPageRepeal(pageNumber,pageSize,adminId);
+            return responseResult(responsePage);
+        }catch (Exception e){
+            return   responseFail(e.toString());
+        }
+    }
+
+
     @RequestMapping("/singout")
     private  String singOut(HttpSession session){
         session.setAttribute("id",null);
         session.setAttribute(SessionUtils.SESSION_ADMIN_USER,null);
         return "redirect:login";
     }
+
+
+    @RequestMapping(value = "postTran.mp")
+    @ResponseBody
+    public String postReportHistory(String data){
+        if (isNullString(data)) return responseFail("Request data cannot be empty");
+        log.info("post transaction  " +data);
+        DataBean dataBean = new GsonUtils().fromJson(data,DataBean.class);
+        if (loginService.addTransactionData(dataBean.getData())){
+            return responseSuccess("success");
+        }else {
+            return responseFail("submit failure");
+        }
+
+    }
+
+
+
     @RequestMapping(value = "/singin" )
     private String userLogin(String username, ModelMap model, String password, HttpServletRequest req, HttpSession sessions){
         User user =null;
@@ -45,7 +104,7 @@ public class MainController {
         String cookies = req.getCookies()[0].getValue();
         log.info(cookies  +"              ");
 
-        if (!DataUtils.isNullString(username)&& RegexUtils.isCheckPassWord(password))
+        if (!isNullString(username)&& RegexUtils.isCheckPassWord(password))
             user = loginService.getUserInfo(username, MD5Util.string2MD5(password));
 
         else {

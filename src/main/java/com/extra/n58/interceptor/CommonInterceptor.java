@@ -45,7 +45,7 @@ public class CommonInterceptor  extends HandlerInterceptorAdapter {
         String username = (String) request.getSession().getAttribute(SessionUtils.SESSION_ADMIN_USER);
         if(username == null){
             log.info("==============执行顺序: 1、preHandle================");
-            response.sendRedirect("/login");
+            response.sendRedirect("login");
             return false;
         }else
             return true;
